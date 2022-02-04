@@ -15,7 +15,10 @@ chmod +x kk
 
 ## 1.3 创建集群
 ```
-./kk create cluster -f config-sample.yaml
+yum install -y conntrack
+
+configs/multiple_node.yaml
+./kk create cluster -f multiple_node.yaml
 ```
 
 ## 1.4 查看进度

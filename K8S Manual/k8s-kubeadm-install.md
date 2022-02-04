@@ -24,11 +24,13 @@ cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
+
 sudo sysctl --system
 ```
 
 ## 1.2 安装kubelet、kubeadm、kubectl
 ```
+# 设置repo
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -41,7 +43,10 @@ gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
 exclude=kubelet kubeadm kubectl
 EOF
 
+# 下载安装
 sudo yum install -y kubelet-1.20.9 kubeadm-1.20.9 kubectl-1.20.9 --disableexcludes=kubernetes
+
+# 启动
 sudo systemctl enable --now kubelet
 ```
 
@@ -69,10 +74,10 @@ chmod +x ./images.sh && ./images.sh
 
 ## 2.2初始化主节点
 ```
-# 所有机器添加master域名映射，以下需要修改为自己的
+# 所有机器添加master域名映射(告诉每个机器master位置)
 echo "172.31.0.4  cluster-endpoint" >> /etc/hosts
 
-# 主节点初始化(所有网络范围不重叠)
+# 主节点初始化(service-cidr和pod-network-cidr所有网络范围不重叠)
 kubeadm init \
 --apiserver-advertise-address=172.31.0.4 \
 --control-plane-endpoint=cluster-endpoint \
@@ -80,56 +85,53 @@ kubeadm init \
 --kubernetes-version v1.20.9 \
 --service-cidr=10.96.0.0/16 \
 --pod-network-cidr=192.168.0.0/16
+
 # 查看集群所有节点
 kubectl get nodes
 
-# 根据配置文件，给集群创建资源
-kubectl apply -f xxxx.yaml
-
-# 查看集群部署了哪些应用？
-docker ps   ===   kubectl get pods -A
-# 运行中的应用在docker里面叫容器，在k8s里面叫Pod
-kubectl get pods -A
+# 查看集群部署了哪些应用(运行中的应用在docker里面叫容器，在k8s里面叫Pod)
+docker ps
+watch -n 1 kubectl get pod -A
 ```
 
 ## 2.3 设置config & 安装网络组件
 ```
 # 设置.kube/config
+mkdir -p $HOME/.kube
+sudo cp /etc/kubenetes/admin.conf $HOME/.kube/config
+sudo chown ${id -u}:${id -g} $HOME/.kube/config
 
 # 安装网络组件
 curl https://docs.projectcalico.org/manifests/calico.yaml -O
+
+# 根据配置文件，给集群创建资源
 kubectl apply -f calico.yaml
 ```
 
 ## 2.4 加入node节点
 ```
-# 加入节点
+# 加入节点(kubeadm init时产生的编号，在主节点执行)
 kubeadm join cluster-endpoint:6443 --token x5g4uy.wpjjdbgra92s25pp \
 	--discovery-token-ca-cert-hash sha256:6255797916eaee52bf9dda9429db616fcd828436708345a308f4b917d3457a22
 
-# 新令牌
+# 新令牌(令牌过期，则在主节点执行生成新的)
 kubeadm token create --print-join-command
-```
 
-## 2.5 验证集群
-```
 # 验证集群节点状态
 kubectl get nodes
 ```
 
-## 2.6 部署dashboard
+## 2.5 部署dashboard
 ```
 # (1)可视化界面
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml
 
 # (2)设置访问端口
+# 编辑type改为NodePort
 kubectl edit svc kubernetes-dashboard -n kubernetes-dashboard
-kubectl get svc -A |grep kubernetes-dashboard
-# 找到端口，在安全组放行
-# 访问： https://集群任意IP:端口
 
 # (3)创建访问账号
-#创建访问账号，准备一个yaml文件； vi dash.yaml
+# 创建访问账号，准备一个yaml文件； vi dash.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -149,8 +151,15 @@ subjects:
   name: admin-user
   namespace: kubernetes-dashboard
 
+# 使用配置文件
 kubectl apply -f dash.yaml
 
 # (4)令牌访问
 kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
+
+# 获取dashboard进程(获取端口)
+kubectl get svc -A | grep kubernetes-dashboard
+
+# 找到端口，在安全组放行
+# 访问，输入令牌： https://集群任意IP:端口
 ```

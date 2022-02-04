@@ -30,6 +30,8 @@ skip-name-resolve
 
 # 3.部署分析
 ```
-# 访问
+# 集群内部访问 - 服务名.项目名
 mysql -uroot -hhis-mysql-glgf.his -p 
+
+# 集群外部 - NodePort
 ```
