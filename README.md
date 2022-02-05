@@ -59,3 +59,18 @@ DockerHost(DockerDaemon + Images->Containers集群)
   - kube-proxy(门卫)->所有应用间的网络访问
 - 命令行kybectl
   - kubectl create deploy xxapp --image=镜像名
+
+## Progression
+```
+(0) K8S 证书 -> CKA / CKS
+Java Codes -> Github
+Java 打包构建 -> Maven/Jenkins(CI/CD)
+Java 测试 -> Junit
+Java Jar -> Nexus
+(1) Docker Image -> Docker Hub
+(2 & 5) K8S Pod -> Helm / Harbor
+(3 & 4) DevOps K8S流水线平台 -> KubeSphere
+(6) 微服务网络 -> ServiceMesh
+(7) 监控告警 -> Fluent Operator + Prometheus & Grafana
+(8) 虚拟机管理 -> KubeVirt
+```

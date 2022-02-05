@@ -17,7 +17,7 @@ chmod +x kk
 ```
 yum install -y conntrack
 
-configs/multiple_node.yaml
+test_yaml/multiple_node.yaml
 ./kk create cluster -f multiple_node.yaml
 ```
 

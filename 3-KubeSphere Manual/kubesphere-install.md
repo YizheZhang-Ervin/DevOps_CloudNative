@@ -37,7 +37,7 @@ mount -t nfs 172.31.0.4:/nfs/data /nfs/data
 
 ### 1.3 配置默认存储
 ```
-configs/storageclass.yaml
+test_yaml/storageclass.yaml
 kubectl apply -f storageclass.yaml
 
 #确认配置是否生效
@@ -46,7 +46,7 @@ kubectl get sc
 
 ## 2. metrics-server
 ```
-configs/metrics_server.yaml
+test_yaml/metrics_server.yaml
 kubectl apply -f metrics_server.yaml
 kubectl get pod -A
 ```
@@ -61,10 +61,10 @@ kubectl top pods -A
 ## 1.下载核心文件
 ```
 wget https://github.com/kubesphere/ks-installer/releases/download/v3.1.1/kubesphere-installer.yaml
-configs/kubesphere-installer.yaml
+test_yaml/kubesphere-installer.yaml
 
 wget https://github.com/kubesphere/ks-installer/releases/download/v3.1.1/cluster-configuration.yaml
-configs/cluster-configuration.yaml
+test_yaml/cluster-configuration.yaml
 
 ```
 

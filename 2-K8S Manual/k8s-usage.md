@@ -168,22 +168,22 @@ kubectl get svc -A
 ## 6.2 使用
 ```
 # 测试环境
-test/test.yaml
+test_yaml/test.yaml
 kubectl apply -f test.yaml
 
 # 多个规则可同时生效
 # 规则1:域名方问
-test/visit.yaml
+test_yaml/visit.yaml
 kubectl apply -f visit.yaml
 kubectl get ingress
 
 # 规则2:路径重写
-test/path.yaml
+test_yaml/path.yaml
 kubectl apply -f path.yaml
 kubectl get ingress
 
 # 规则3:流量限制
-test/volume.yaml
+test_yaml/volume.yaml
 kubectl apply -f volume.yaml
 kubectl get ingress
 ```
@@ -221,7 +221,7 @@ mount -t nfs 172.31.0.4:/nfs/data /nfs/data
 echo "hello nfs server" > /nfs/data/test.txt
 
 # (4)原生方式数据挂载
-test/store.yaml
+test_yaml/store.yaml
 ```
 
 ## 7.2 PV&PVC
@@ -234,18 +234,18 @@ test/store.yaml
 mkdir -p /nfs/data/01
 mkdir -p /nfs/data/02
 mkdir -p /nfs/data/03
-test/create_pv.yaml
+test_yaml/create_pv.yaml
 kubectl apply -f create_pv.yaml
 kubectl get persistentvolume
 
 # PVC创建
-test/create_pvc.yaml
+test_yaml/create_pvc.yaml
 kubectl apply -f create_pvc.yaml
 kubectl get pv
 kubectl get pvc
 
 # 创pod绑pvc
-test/bind_pvc.yaml
+test_yaml/bind_pvc.yaml
 kubectl apply -f bind_pvc.yaml
 kubectl get pod,pv,pvc
 ```
@@ -255,10 +255,10 @@ kubectl get pod,pv,pvc
 ```
 # 配置文件创建为配置集 - 创建配置，redis保存到k8s的etcd
 kubectl create cm redis-conf --from-file=redis.conf
-或用test/redis_configmap.yaml
+或用test_yaml/redis_configmap.yaml
 
 # 创建pod
-test/redis_pod.yaml
+test_yaml/redis_pod.yaml
 kubectl apply -f redis_pod.yaml
 kubectl get cm
 
@@ -284,6 +284,6 @@ kubectl create secret docker-registry xx \
 kubectl get secret xx -oyaml
 
 # 使用
-test/redis_secret.yaml
+test_yaml/redis_secret.yaml
 kubectl apply -f redis_secret.yaml
 ```
