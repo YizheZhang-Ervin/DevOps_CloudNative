@@ -56,16 +56,16 @@ sudo systemctl enable --now kubelet
 sudo tee ./images.sh <<-'EOF'
 #!/bin/bash
 images=(
-kube-apiserver:v1.20.9
-kube-proxy:v1.20.9
-kube-controller-manager:v1.20.9
-kube-scheduler:v1.20.9
-coredns:1.7.0
-etcd:3.4.13-0
-pause:3.2
+kube-apiserver:v1.23.3
+kube-proxy:v1.23.3
+kube-controller-manager:v1.23.3
+kube-scheduler:v1.23.3
+pause:3.6
+etcd:3.5.1-0
+coredns:1.8.6
 )
 for imageName in ${images[@]} ; do
-docker pull registry.cn-hangzhou.aliyuncs.com/lfy_k8s_images/$imageName
+docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName
 done
 EOF
    
