@@ -117,7 +117,7 @@ kubectl get pods -A
 journalctl -u -f
 ```
 
-## 2.5 加入node节点(待验证)
+## 2.5 加入node节点
 ```
 # 加入节点(kubeadm init时产生的编号，在主节点执行)
 kubeadm join cluster-endpoint:6443 --token xx.xx \
@@ -127,13 +127,23 @@ kubeadm join cluster-endpoint:6443 --token xx.xx \
 kubeadm token create --print-join-command
 ```
 
-## 2.6 单节点集群(待验证)
+## 2.6 单节点集群
 ```
 kubectl get node -o yaml | grep taint -A 5
 kubectl taint nodes --all node-role.kubernetes.io/master-
 ```
 
-# 3.卸载
+
+
+# 3.命令补全
+```
+apt install bash-completion
+locate bash_completion
+source /usr/share/bash-completion/bash_completion
+source <(kubectl completion bash)
+```
+
+# 4.卸载
 ```
 kubeadm reset -f
 modprobe -r ipip

@@ -130,7 +130,7 @@ kubeadm join cluster-endpoint:6443 --token x5g4uy.wpjjdbgra92s25pp \
 kubeadm token create --print-join-command
 ```
 
-# 3.安装补全命令(待验证)
+# 3.安装补全命令
 ```
 yum -y install bash-completion  #安装补全命令的包
 kubectl completion bash
