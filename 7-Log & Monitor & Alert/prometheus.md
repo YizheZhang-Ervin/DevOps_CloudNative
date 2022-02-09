@@ -3,7 +3,6 @@
 ## PromQL
 - 概念
   - 瞬时向量
-    - =/!=/=~/!~
     - http_requests_total
   - 区间向量
     - rate/irate
