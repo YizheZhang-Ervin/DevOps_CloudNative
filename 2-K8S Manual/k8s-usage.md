@@ -59,6 +59,8 @@ kubectl run mynginx --image=nginx
 ## 4.1控制pod多副本
 ```
 kubectl create deployment 部署名 --image=镜像名 --replicas=3
+kubectl expose deployment 部署名 --port=80 --type=NodePort
+kubectl get pods,svc
 ```
 
 ## 4.2扩缩容
@@ -286,4 +288,47 @@ kubectl get secret xx -oyaml
 # 使用
 test_yaml/redis_secret.yaml
 kubectl apply -f redis_secret.yaml
+```
+
+# 8.装dashboard
+```
+# (1)可视化界面
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml
+
+# (2)设置访问端口
+# 编辑type改为NodePort
+kubectl edit svc kubernetes-dashboard -n kubernetes-dashboard
+
+# (3)创建访问账号
+# 创建访问账号，准备一个yaml文件； vi dash.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+# 使用配置文件
+kubectl apply -f dash.yaml
+
+# (4)令牌访问
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
+
+# 获取dashboard进程(获取端口)
+kubectl get svc -A | grep kubernetes-dashboard
+
+# 找到端口，在安全组放行
+# 访问，输入令牌： https://集群任意IP:端口
 ```
