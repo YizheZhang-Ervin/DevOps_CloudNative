@@ -77,17 +77,22 @@ done
 EOF
 
 # 方法2
-sudo tee ./images.sh <<-'EOF'
-#!/bin/bash
+touch images.sh
+nano images.sh
+# 写入以下内容
 for  i  in  `kubeadm config images list`;  do
     imageName=${i#k8s.gcr.io/}
     docker pull registry.aliyuncs.com/google_containers/$imageName
     docker tag registry.aliyuncs.com/google_containers/$imageName k8s.gcr.io/$imageName
     docker rmi registry.aliyuncs.com/google_containers/$imageName
-done
-EOF
-
-chmod +x ./images.sh && ./images.sh
+done;
+ctrl+o->回车->ctrl+x
+chmod +x ./images.sh && sh ./images.sh
+docker images
+# 可能要单独拉一下coredns
+docker pull registry.aliyuncs.com/google_containers/coredns:v1.8.6
+docker tag registry.aliyuncs.com/google_containers/coredns:v1.8.6 k8s.gcr.io/coredns:v1.8.6
+docker rmi registry.aliyuncs.com/google_containers/coredns:v1.8.6
 ```
 
 ## 2.2 初始化主节点 & 设置config

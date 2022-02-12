@@ -65,7 +65,6 @@ test_yaml/kubesphere-installer.yaml
 
 wget https://github.com/kubesphere/ks-installer/releases/download/v3.1.1/cluster-configuration.yaml
 test_yaml/cluster-configuration.yaml
-
 ```
 
 ## 2. 修改cluster-configuration
@@ -83,7 +82,6 @@ kubectl apply -f cluster-configuration.yaml
 ## 4. 查看安装进度
 ```
 kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l app=ks-install -o jsonpath='{.items[0].metadata.name}') -f
-
 ```
 
 ## 5. 解决etcd监控证书找不到问题

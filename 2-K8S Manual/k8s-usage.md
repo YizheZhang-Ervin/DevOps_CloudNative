@@ -47,7 +47,6 @@ curl 192.168.169.136
 
 # 进控制台
 kubectl exec -it Pod名字 -- /bin/bash
-
 ```
 
 # 4.Deployment
